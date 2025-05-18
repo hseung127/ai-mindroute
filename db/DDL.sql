@@ -1,16 +1,16 @@
--- 1. ªÁøÎ¿⁄
+-- 1. ÏÇ¨Ïö©Ïûê
 CREATE TABLE users (
   id BIGINT PRIMARY KEY AUTO_INCREMENT,
   nickname VARCHAR(50),
   create_date DATETIME DEFAULT CURRENT_TIMESTAMP,
   update_date DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   delete_date DATETIME NULL,
-  creator_id BIGINT,
-  updater_id BIGINT,
-  deleter_id BIGINT
+  create_id BIGINT,
+  update_id BIGINT,
+  delete_id BIGINT
 );
 
--- 2. Ω…∏Æ∞ÀªÁ ¡§¿«
+-- 2. Ïã¨Î¶¨Í≤ÄÏÇ¨ Ï†ïÏùò
 CREATE TABLE tests (
   id BIGINT PRIMARY KEY AUTO_INCREMENT,
   title VARCHAR(100) NOT NULL,
@@ -18,12 +18,12 @@ CREATE TABLE tests (
   create_date DATETIME DEFAULT CURRENT_TIMESTAMP,
   update_date DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   delete_date DATETIME NULL,
-  creator_id BIGINT,
-  updater_id BIGINT,
-  deleter_id BIGINT
+  create_id BIGINT,
+  update_id BIGINT,
+  delete_id BIGINT
 );
 
--- 3. πÆ«◊
+-- 3. Î¨∏Ìï≠
 CREATE TABLE questions (
   id BIGINT PRIMARY KEY AUTO_INCREMENT,
   test_id BIGINT NOT NULL,
@@ -32,12 +32,12 @@ CREATE TABLE questions (
   create_date DATETIME DEFAULT CURRENT_TIMESTAMP,
   update_date DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   delete_date DATETIME NULL,
-  creator_id BIGINT,
-  updater_id BIGINT,
-  deleter_id BIGINT
+  create_id BIGINT,
+  update_id BIGINT,
+  delete_id BIGINT
 );
 
--- 4. º±≈√¡ˆ
+-- 4. ÏÑ†ÌÉùÏßÄ
 CREATE TABLE choices (
   id BIGINT PRIMARY KEY AUTO_INCREMENT,
   question_id BIGINT NOT NULL,
@@ -46,12 +46,12 @@ CREATE TABLE choices (
   create_date DATETIME DEFAULT CURRENT_TIMESTAMP,
   update_date DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   delete_date DATETIME NULL,
-  creator_id BIGINT,
-  updater_id BIGINT,
-  deleter_id BIGINT
+  create_id BIGINT,
+  update_id BIGINT,
+  delete_id BIGINT
 );
 
--- 5. ∞ÀªÁ ººº«
+-- 5. Í≤ÄÏÇ¨ ÏÑ∏ÏÖò
 CREATE TABLE test_sessions (
   id BIGINT PRIMARY KEY AUTO_INCREMENT,
   session_id CHAR(36) NOT NULL UNIQUE,
@@ -62,12 +62,12 @@ CREATE TABLE test_sessions (
   create_date DATETIME DEFAULT CURRENT_TIMESTAMP,
   update_date DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   delete_date DATETIME NULL,
-  creator_id BIGINT,
-  updater_id BIGINT,
-  deleter_id BIGINT
+  create_id BIGINT,
+  update_id BIGINT,
+  delete_id BIGINT
 );
 
--- 6. ¿¿¥‰
+-- 6. ÏùëÎãµ
 CREATE TABLE answers (
   id BIGINT PRIMARY KEY AUTO_INCREMENT,
   session_id BIGINT NOT NULL,
@@ -76,12 +76,12 @@ CREATE TABLE answers (
   create_date DATETIME DEFAULT CURRENT_TIMESTAMP,
   update_date DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   delete_date DATETIME NULL,
-  creator_id BIGINT,
-  updater_id BIGINT,
-  deleter_id BIGINT
+  create_id BIGINT,
+  update_id BIGINT,
+  delete_id BIGINT
 );
 
--- 7. ¡°ºˆ ªÛ≈¬
+-- 7. Ï†êÏàò ÏÉÅÌÉú
 CREATE TABLE score_states (
   id BIGINT PRIMARY KEY AUTO_INCREMENT,
   session_id BIGINT NOT NULL,
@@ -90,12 +90,12 @@ CREATE TABLE score_states (
   update_date DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   create_date DATETIME DEFAULT CURRENT_TIMESTAMP,
   delete_date DATETIME NULL,
-  creator_id BIGINT,
-  updater_id BIGINT,
-  deleter_id BIGINT
+  create_id BIGINT,
+  update_id BIGINT,
+  delete_id BIGINT
 );
 
--- 8. πÆ«◊ ≈•
+-- 8. Î¨∏Ìï≠ ÌÅê
 CREATE TABLE queue_items (
   id BIGINT PRIMARY KEY AUTO_INCREMENT,
   session_id BIGINT NOT NULL,
@@ -105,12 +105,12 @@ CREATE TABLE queue_items (
   create_date DATETIME DEFAULT CURRENT_TIMESTAMP,
   update_date DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   delete_date DATETIME NULL,
-  creator_id BIGINT,
-  updater_id BIGINT,
-  deleter_id BIGINT
+  create_id BIGINT,
+  update_id BIGINT,
+  delete_id BIGINT
 );
 
--- 9. ∑Í
+-- 9. Î£∞
 CREATE TABLE rules (
   id BIGINT PRIMARY KEY AUTO_INCREMENT,
   test_id BIGINT NOT NULL,
@@ -119,12 +119,12 @@ CREATE TABLE rules (
   create_date DATETIME DEFAULT CURRENT_TIMESTAMP,
   update_date DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   delete_date DATETIME NULL,
-  creator_id BIGINT,
-  updater_id BIGINT,
-  deleter_id BIGINT
+  create_id BIGINT,
+  update_id BIGINT,
+  delete_id BIGINT
 );
 
--- 10. ∑Í ¡∂∞«
+-- 10. Î£∞ Ï°∞Í±¥
 CREATE TABLE rule_conditions (
   id BIGINT PRIMARY KEY AUTO_INCREMENT,
   rule_id BIGINT NOT NULL,
@@ -136,12 +136,12 @@ CREATE TABLE rule_conditions (
   create_date DATETIME DEFAULT CURRENT_TIMESTAMP,
   update_date DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   delete_date DATETIME NULL,
-  creator_id BIGINT,
-  updater_id BIGINT,
-  deleter_id BIGINT
+  create_id BIGINT,
+  update_id BIGINT,
+  delete_id BIGINT
 );
 
--- 11. ∑Í æ◊º«
+-- 11. Î£∞ Ïï°ÏÖò
 CREATE TABLE rule_actions (
   id BIGINT PRIMARY KEY AUTO_INCREMENT,
   rule_id BIGINT NOT NULL,
@@ -151,14 +151,15 @@ CREATE TABLE rule_actions (
   create_date DATETIME DEFAULT CURRENT_TIMESTAMP,
   update_date DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   delete_date DATETIME NULL,
-  creator_id BIGINT,
-  updater_id BIGINT,
-  deleter_id BIGINT
+  create_id BIGINT,
+  update_id BIGINT,
+  delete_id BIGINT
 );
 
 
 
--- FK √ﬂ∞°
+
+-- FK ÔøΩﬂ∞ÔøΩ
 ALTER TABLE test_sessions ADD CONSTRAINT fk_test_sessions_user FOREIGN KEY (user_id) REFERENCES users(id);
 ALTER TABLE test_sessions ADD CONSTRAINT fk_test_sessions_test FOREIGN KEY (test_id) REFERENCES tests(id);
 
