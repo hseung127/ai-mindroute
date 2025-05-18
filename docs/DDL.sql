@@ -1,5 +1,5 @@
 -- 1. 사용자
-CREATE TABLE users (
+CREATE TABLE member (
   id BIGINT PRIMARY KEY AUTO_INCREMENT,
   nickname VARCHAR(50),
   create_date DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -11,7 +11,7 @@ CREATE TABLE users (
 );
 
 -- 2. 심리검사 정의
-CREATE TABLE tests (
+CREATE TABLE test (
   id BIGINT PRIMARY KEY AUTO_INCREMENT,
   title VARCHAR(100) NOT NULL,
   description TEXT,
@@ -24,7 +24,7 @@ CREATE TABLE tests (
 );
 
 -- 3. 문항
-CREATE TABLE questions (
+CREATE TABLE question (
   id BIGINT PRIMARY KEY AUTO_INCREMENT,
   test_id BIGINT NOT NULL,
   text TEXT NOT NULL,
@@ -38,7 +38,7 @@ CREATE TABLE questions (
 );
 
 -- 4. 선택지
-CREATE TABLE choices (
+CREATE TABLE choice (
   id BIGINT PRIMARY KEY AUTO_INCREMENT,
   question_id BIGINT NOT NULL,
   text VARCHAR(200) NOT NULL,
@@ -52,13 +52,13 @@ CREATE TABLE choices (
 );
 
 -- 5. 검사 세션
-CREATE TABLE test_sessions (
+CREATE TABLE test_session (
   id BIGINT PRIMARY KEY AUTO_INCREMENT,
   session_id CHAR(36) NOT NULL UNIQUE,
-  user_id BIGINT,
+  member_id BIGINT,
   test_id BIGINT NOT NULL,
-  started_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  finished_at DATETIME,
+  start_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+  finish_date DATETIME,
   create_date DATETIME DEFAULT CURRENT_TIMESTAMP,
   update_date DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   delete_date DATETIME NULL,
@@ -68,7 +68,7 @@ CREATE TABLE test_sessions (
 );
 
 -- 6. 응답
-CREATE TABLE answers (
+CREATE TABLE answer (
   id BIGINT PRIMARY KEY AUTO_INCREMENT,
   session_id BIGINT NOT NULL,
   question_id BIGINT NOT NULL,
@@ -82,7 +82,7 @@ CREATE TABLE answers (
 );
 
 -- 7. 점수 상태
-CREATE TABLE score_states (
+CREATE TABLE score_state (
   id BIGINT PRIMARY KEY AUTO_INCREMENT,
   session_id BIGINT NOT NULL,
   dimension VARCHAR(50) NOT NULL,
@@ -96,7 +96,7 @@ CREATE TABLE score_states (
 );
 
 -- 8. 문항 큐
-CREATE TABLE queue_items (
+CREATE TABLE queue_item (
   id BIGINT PRIMARY KEY AUTO_INCREMENT,
   session_id BIGINT NOT NULL,
   question_id BIGINT NOT NULL,
@@ -111,7 +111,7 @@ CREATE TABLE queue_items (
 );
 
 -- 9. 룰
-CREATE TABLE rules (
+CREATE TABLE rule (
   id BIGINT PRIMARY KEY AUTO_INCREMENT,
   test_id BIGINT NOT NULL,
   priority INT NOT NULL,
@@ -125,14 +125,14 @@ CREATE TABLE rules (
 );
 
 -- 10. 룰 조건
-CREATE TABLE rule_conditions (
+CREATE TABLE rule_condition (
   id BIGINT PRIMARY KEY AUTO_INCREMENT,
   rule_id BIGINT NOT NULL,
   condition_type VARCHAR(50) NOT NULL,
   dimension VARCHAR(50),
   target_dimension VARCHAR(50),
   operator VARCHAR(10) NOT NULL,
-  value INT NOT NULL,
+  comparison_value INT NOT NULL,
   create_date DATETIME DEFAULT CURRENT_TIMESTAMP,
   update_date DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   delete_date DATETIME NULL,
@@ -142,7 +142,7 @@ CREATE TABLE rule_conditions (
 );
 
 -- 11. 룰 액션
-CREATE TABLE rule_actions (
+CREATE TABLE rule_action (
   id BIGINT PRIMARY KEY AUTO_INCREMENT,
   rule_id BIGINT NOT NULL,
   action_type VARCHAR(20) NOT NULL,
@@ -158,25 +158,25 @@ CREATE TABLE rule_actions (
 
 
 
+-- FK 추가
+ALTER TABLE test_session ADD CONSTRAINT fk_test_session_user FOREIGN KEY (member_id) REFERENCES member(id);
+ALTER TABLE test_session ADD CONSTRAINT fk_test_session_test FOREIGN KEY (test_id) REFERENCES test(id);
 
--- FK �߰�
-ALTER TABLE test_sessions ADD CONSTRAINT fk_test_sessions_user FOREIGN KEY (user_id) REFERENCES users(id);
-ALTER TABLE test_sessions ADD CONSTRAINT fk_test_sessions_test FOREIGN KEY (test_id) REFERENCES tests(id);
+ALTER TABLE question ADD CONSTRAINT fk_question_test FOREIGN KEY (test_id) REFERENCES test(id) ON DELETE CASCADE;
+ALTER TABLE choice ADD CONSTRAINT fk_choice_question FOREIGN KEY (question_id) REFERENCES question(id) ON DELETE CASCADE;
 
-ALTER TABLE questions ADD CONSTRAINT fk_questions_test FOREIGN KEY (test_id) REFERENCES tests(id) ON DELETE CASCADE;
-ALTER TABLE choices ADD CONSTRAINT fk_choices_question FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE;
+ALTER TABLE answer ADD CONSTRAINT fk_answer_session FOREIGN KEY (session_id) REFERENCES test_session(id) ON DELETE CASCADE;
+ALTER TABLE answer ADD CONSTRAINT fk_answer_question FOREIGN KEY (question_id) REFERENCES question(id);
+ALTER TABLE answer ADD CONSTRAINT fk_answer_choice FOREIGN KEY (choice_id) REFERENCES choice(id);
 
-ALTER TABLE answers ADD CONSTRAINT fk_answers_session FOREIGN KEY (session_id) REFERENCES test_sessions(id) ON DELETE CASCADE;
-ALTER TABLE answers ADD CONSTRAINT fk_answers_question FOREIGN KEY (question_id) REFERENCES questions(id);
-ALTER TABLE answers ADD CONSTRAINT fk_answers_choice FOREIGN KEY (choice_id) REFERENCES choices(id);
+ALTER TABLE score_state ADD CONSTRAINT fk_score_state_session FOREIGN KEY (session_id) REFERENCES test_session(id) ON DELETE CASCADE;
 
-ALTER TABLE score_states ADD CONSTRAINT fk_score_states_session FOREIGN KEY (session_id) REFERENCES test_sessions(id) ON DELETE CASCADE;
+ALTER TABLE queue_item ADD CONSTRAINT fk_queue_item_session FOREIGN KEY (session_id) REFERENCES test_session(id) ON DELETE CASCADE;
+ALTER TABLE queue_item ADD CONSTRAINT fk_queue_item_question FOREIGN KEY (question_id) REFERENCES question(id);
 
-ALTER TABLE queue_items ADD CONSTRAINT fk_queue_items_session FOREIGN KEY (session_id) REFERENCES test_sessions(id) ON DELETE CASCADE;
-ALTER TABLE queue_items ADD CONSTRAINT fk_queue_items_question FOREIGN KEY (question_id) REFERENCES questions(id);
+ALTER TABLE rule ADD CONSTRAINT fk_rule_test FOREIGN KEY (test_id) REFERENCES test(id) ON DELETE CASCADE;
 
-ALTER TABLE rules ADD CONSTRAINT fk_rules_test FOREIGN KEY (test_id) REFERENCES tests(id) ON DELETE CASCADE;
+ALTER TABLE rule_condition ADD CONSTRAINT fk_rule_condition_rule FOREIGN KEY (rule_id) REFERENCES rule(id) ON DELETE CASCADE;
+ALTER TABLE rule_action ADD CONSTRAINT fk_rule_action_rule FOREIGN KEY (rule_id) REFERENCES rule(id) ON DELETE CASCADE;
+ALTER TABLE rule_action ADD CONSTRAINT fk_rule_action_question FOREIGN KEY (question_id) REFERENCES question(id);
 
-ALTER TABLE rule_conditions ADD CONSTRAINT fk_rule_conditions_rule FOREIGN KEY (rule_id) REFERENCES rules(id) ON DELETE CASCADE;
-ALTER TABLE rule_actions ADD CONSTRAINT fk_rule_actions_rule FOREIGN KEY (rule_id) REFERENCES rules(id) ON DELETE CASCADE;
-ALTER TABLE rule_actions ADD CONSTRAINT fk_rule_actions_question FOREIGN KEY (question_id) REFERENCES questions(id);
