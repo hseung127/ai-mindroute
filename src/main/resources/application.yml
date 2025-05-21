@@ -1,6 +1,7 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:mindroute
+    # url: jdbc:h2:mem:mindroute
+    url: jdbc:h2:file:~/mindroute
     driver-class-name: org.h2.Driver
     username: sa
     password:

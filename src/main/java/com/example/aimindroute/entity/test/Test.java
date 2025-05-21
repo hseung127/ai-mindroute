@@ -19,5 +19,9 @@ public class Test extends BaseEntity {
 
     private String title;
 
+    @Column(columnDefinition = "TEXT") // 컬럼 타입 기본 VARCHAR(255) -> text로 지정
     private String description;
+
+    @Column(name = "visible_yn")
+    private Boolean visibleYn;
 }
