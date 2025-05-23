@@ -1,8 +1,8 @@
 package com.example.aimindroute.service;
 
 
+import com.example.aimindroute.common.ApiResponse;
 import com.example.aimindroute.dto.QuestionCreateRequestDto;
-import com.example.aimindroute.dto.QuestionResponseDto;
 import com.example.aimindroute.entity.question.Choice;
 import com.example.aimindroute.entity.question.Question;
 import com.example.aimindroute.entity.test.Test;
@@ -10,17 +10,19 @@ import com.example.aimindroute.repository.QuestionRepository;
 import com.example.aimindroute.repository.TestRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class QuestionService {
     private final QuestionRepository questionRepository;
     private final TestRepository testRepository;
 
-    public QuestionResponseDto createQuestion(QuestionCreateRequestDto dto){
+    public ApiResponse<Long> createQuestion(QuestionCreateRequestDto dto){
 
         // 테스트 존재 검증
         Test test = testRepository.findById(dto.getTestId())
@@ -38,14 +40,18 @@ public class QuestionService {
                     Choice choice = new Choice();
                     choice.setText(choiceDto.getText());
                     choice.setScoreDelta(choiceDto.getScoreDelta());
-                    choice.setCreateId(choiceDto.getCreateId());
+                    choice.setCreateId(dto.getCreateId());
                     choice.setQuestion(question); // cascade
                     return choice;
                 }).collect(Collectors.toList());
 
         question.setChoices(choices); // cascade 작동을 위한 연결
-        Question saved = questionRepository.save(question);
+        Question savedQuestion = questionRepository.save(question);
 
-        return QuestionResponseDto.fromEntity(saved);
+        return ApiResponse.<Long>builder()
+                .success(true)
+                .message("Question이 성공적으로 생성되었습니다.")
+                .data(savedQuestion.getId())
+                .build();
     }
 }

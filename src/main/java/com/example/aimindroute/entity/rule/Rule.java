@@ -24,4 +24,7 @@ public class Rule extends BaseEntity {
     private int priority;
 
     private boolean stopAfterApply;
+
+    @Column(name = "visible_yn")
+    private boolean visibleYn;
 }

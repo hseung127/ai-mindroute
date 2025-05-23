@@ -22,11 +22,12 @@ public class RuleAction extends BaseEntity {
     @JoinColumn(name = "rule_id")
     private Rule rule;
 
-    @ManyToOne
-    @JoinColumn(name = "question_id")
-    private Question question;
+    @Column(name = "question_id")
+    private Long questionId;
 
+    @Column(name = "action_type")
     private String actionType;
 
+    @Column(name = "extra_data", columnDefinition = "TEXT")
     private String extraData;
 }

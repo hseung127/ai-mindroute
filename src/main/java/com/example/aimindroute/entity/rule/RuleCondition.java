@@ -21,13 +21,16 @@ public class RuleCondition extends BaseEntity {
     @JoinColumn(name = "rule_id")
     private Rule rule;
 
+    @Column(name = "condition_type")
     private String conditionType;
 
     private String dimension;
 
+    @Column(name = "target_dimension")
     private String targetDimension;
 
     private String operator;
 
-    private int comparison_value;
+    @Column(name = "comparison_value")
+    private int comparisonValue;
 }
