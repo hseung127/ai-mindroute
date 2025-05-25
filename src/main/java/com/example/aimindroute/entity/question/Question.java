@@ -50,7 +50,14 @@ public class Question extends BaseEntity {
      *   JPA 연관관계는 유지하되 DDL 설정은 none/update로 설정하거나,
      *   @JoinColumn에서 insertable = false, updatable = false 사용 가능
      */
-    @Setter
+    @Builder.Default
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Choice> choices = new ArrayList<>();
+
+    // 연관 관계 메서드
+    public void addChoice(Choice choice) {
+        this.choices.add(choice); // 리스트에 추가
+        choice.setQuestion(this); // 연관관계 설정
+    }
+
 }

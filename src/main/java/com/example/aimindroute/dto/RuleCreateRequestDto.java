@@ -1,6 +1,5 @@
 package com.example.aimindroute.dto;
 
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import java.util.List;

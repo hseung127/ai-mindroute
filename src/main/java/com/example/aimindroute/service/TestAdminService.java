@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class TestService {
+public class TestAdminService {
     private final TestRepository testRepository;
 
     public ApiResponse<Long> createTest(TestCreateRequestDto dto) {

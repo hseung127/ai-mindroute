@@ -1,13 +1,12 @@
 package com.example.aimindroute.service;
 
-
-import com.example.aimindroute.common.ApiResponse;
-import com.example.aimindroute.dto.QuestionCreateRequestDto;
+import com.example.aimindroute.dto.ChoiceResponseDto;
+import com.example.aimindroute.dto.QuestionResponseDto;
 import com.example.aimindroute.entity.question.Choice;
 import com.example.aimindroute.entity.question.Question;
-import com.example.aimindroute.entity.test.Test;
+import com.example.aimindroute.repository.ChoiceRepository;
 import com.example.aimindroute.repository.QuestionRepository;
-import com.example.aimindroute.repository.TestRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,38 +19,25 @@ import java.util.stream.Collectors;
 @Transactional
 public class QuestionService {
     private final QuestionRepository questionRepository;
-    private final TestRepository testRepository;
+    private final ChoiceRepository choiceRepository;
 
-    public ApiResponse<Long> createQuestion(QuestionCreateRequestDto dto){
+    // 클라이언트 문항, 선택지 조회
+    public QuestionResponseDto getQuestionById(Long id) {
+        Question question = questionRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("해당 문항이 없습니다: " + id));
 
-        // 테스트 존재 검증
-        Test test = testRepository.findById(dto.getTestId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 테스트가 없습니다."));
+        List<Choice> choices = choiceRepository.findByQuestion_IdOrderByIdAsc(id);
 
-        Question question = new Question();
-        question.setText(dto.getText());
-        question.setDimension(dto.getDimension());
-        question.setCreateId(dto.getCreateId());
-        question.setTest(test);
-
-        // 각 choice에 question 설정
-        List<Choice> choices = dto.getChoices().stream()
-                .map(choiceDto -> {
-                    Choice choice = new Choice();
-                    choice.setText(choiceDto.getText());
-                    choice.setScoreDelta(choiceDto.getScoreDelta());
-                    choice.setCreateId(dto.getCreateId());
-                    choice.setQuestion(question); // cascade
-                    return choice;
-                }).collect(Collectors.toList());
-
-        question.setChoices(choices); // cascade 작동을 위한 연결
-        Question savedQuestion = questionRepository.save(question);
-
-        return ApiResponse.<Long>builder()
-                .success(true)
-                .message("Question이 성공적으로 생성되었습니다.")
-                .data(savedQuestion.getId())
+        return QuestionResponseDto.builder()
+                .id(question.getId())
+                .text(question.getText())
+                .choices(
+                        choices.stream()
+                                .map(c -> new ChoiceResponseDto(c.getId(), c.getText()))
+                                .collect(Collectors.toList())
+                )
                 .build();
     }
+
+
 }

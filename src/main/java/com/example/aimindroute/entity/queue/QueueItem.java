@@ -19,11 +19,11 @@ public class QueueItem extends BaseEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "session_id")
+    @JoinColumn(name = "session_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private TestSession session;
 
     @ManyToOne
-    @JoinColumn(name = "question_id")
+    @JoinColumn(name = "question_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Question question;
 
     private int position;

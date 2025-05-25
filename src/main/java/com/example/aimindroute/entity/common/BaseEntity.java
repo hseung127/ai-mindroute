@@ -19,8 +19,6 @@ public abstract class BaseEntity {
     private Long updateId;
     private Long deleteId;
 
-
-
     @PrePersist
     protected void onCreate() {
         this.createDate = LocalDateTime.now();

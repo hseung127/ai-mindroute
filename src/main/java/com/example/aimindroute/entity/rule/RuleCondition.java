@@ -3,7 +3,6 @@ package com.example.aimindroute.entity.rule;
 import com.example.aimindroute.entity.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
-import com.example.aimindroute.entity.rule.Rule;
 
 @Entity
 @Table(name = "rule_condition")
@@ -17,8 +16,9 @@ public class RuleCondition extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "rule_id")
+    @Setter
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "rule_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Rule rule;
 
     @Column(name = "condition_type")
