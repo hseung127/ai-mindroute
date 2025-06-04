@@ -8,7 +8,7 @@ import lombok.*;
 @Entity
 @Table(name = "test_session")
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class TestSession extends BaseEntity {
@@ -17,17 +17,24 @@ public class TestSession extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
     private String sessionId;
 
+    @Setter
     @ManyToOne
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", nullable = true)
     private Member member;
 
+    @Setter
     @ManyToOne
     @JoinColumn(name = "test_id")
     private Test test;
 
-    private java.time.LocalDateTime start_date;
+    @Setter
+    @Column(name = "start_date")
+    private java.time.LocalDateTime startDate;
 
-    private java.time.LocalDateTime finish_date;
+    @Setter
+    @Column(name = "finish_date")
+    private java.time.LocalDateTime finishDate;
 }

@@ -20,13 +20,13 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class RuleAdminService {
     private final RuleRepository ruleRepository;
     private final RuleConditionRepository ruleConditionRepository;
     private final RuleActionRepository ruleActionRepository;
     private final TestRepository testRepository;
 
+    @Transactional
     public ApiResponse<Long> createRule(RuleCreateRequestDto dto) {
         // 테스트 존재 검증
         Test test = testRepository.findById(dto.getTestId())

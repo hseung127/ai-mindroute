@@ -1,5 +1,6 @@
 package com.example.aimindroute.common;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.http.ResponseEntity;
@@ -13,49 +14,36 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
     // 1. JSON 바인딩 실패 (@Valid, @RequestBody)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse<Void>> handleValidation(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ApiErrorResponse> handleValidation(MethodArgumentNotValidException ex, HttpServletRequest request) {
         String message = ex.getBindingResult().getFieldError().getDefaultMessage();
-        return ResponseEntity.badRequest().body(ApiResponse.<Void>builder()
-                .success(false)
-                .message("입력값 오류: " + message)
-                .build());
+        return ResponseEntity.badRequest().body(ApiErrorResponse.of("JSON 오류: " + message, 400, request.getRequestURI()));
     }
 
     // 2. Form 데이터 검증 실패 (ex: @Valid in @ModelAttribute)
     @ExceptionHandler(BindException.class)
-    public ResponseEntity<ApiResponse<Void>> handleBind(BindException ex) {
+    public ResponseEntity<ApiErrorResponse> handleBind(BindException ex, HttpServletRequest request) {
         String message = ex.getBindingResult().getFieldError().getDefaultMessage();
-        return ResponseEntity.badRequest().body(ApiResponse.<Void>builder()
-                .success(false)
-                .message("입력값 오류: " + message)
-                .build());
+        return ResponseEntity.badRequest().body(ApiErrorResponse.of("입력값 오류: " + message, 400, request.getRequestURI()));
     }
 
     // 3. 제약조건 실패 등
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ApiResponse<Void>> handleConstraint(ConstraintViolationException ex) {
-        return ResponseEntity.badRequest().body(ApiResponse.<Void>builder()
-                .success(false)
-                .message("검증 오류: " + ex.getMessage())
-                .build());
+    public ResponseEntity<ApiErrorResponse> handleConstraint(ConstraintViolationException ex, HttpServletRequest request) {
+        return ResponseEntity.badRequest().body(ApiErrorResponse.of("검증 오류: " + ex.getMessage(), 400, request.getRequestURI()));
     }
 
     // 4. IllegalArgumentException
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ApiResponse<Void>> handleIllegalArgument(IllegalArgumentException ex) {
-        return ResponseEntity.badRequest().body(ApiResponse.<Void>builder()
-                .success(false)
-                .message(ex.getMessage())
-                .build());
+    public ResponseEntity<ApiErrorResponse> handleIllegalArgument(IllegalArgumentException ex, HttpServletRequest request) {
+        return ResponseEntity.badRequest().body(ApiErrorResponse.of(ex.getMessage(), 400, request.getRequestURI()));
     }
 
     // 5. 그 외 모든 예외
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<Void>> handleAll(Exception ex) {
-        log.error("[서버 오류] ", ex); // 서버 로그에 기록
-        return ResponseEntity.internalServerError().body(ApiResponse.<Void>builder()
-                .success(false)
-                .message("알 수 없는 오류가 발생했습니다.")
-                .build());
+    public ResponseEntity<ApiErrorResponse> handleAll(Exception ex, HttpServletRequest request) {
+        log.error("[서버 오류]", ex);
+        return ResponseEntity.internalServerError().body(
+                ApiErrorResponse.of("알 수 없는 오류가 발생했습니다.", 500, request.getRequestURI())
+        );
     }
 }

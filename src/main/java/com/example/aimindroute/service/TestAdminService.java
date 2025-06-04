@@ -10,10 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class TestAdminService {
     private final TestRepository testRepository;
 
+    @Transactional
     public ApiResponse<Long> createTest(TestCreateRequestDto dto) {
         Test test = Test.builder()
                 .title(dto.getTitle())

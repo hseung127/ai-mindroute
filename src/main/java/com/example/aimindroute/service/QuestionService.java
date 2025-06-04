@@ -16,12 +16,12 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class QuestionService {
     private final QuestionRepository questionRepository;
     private final ChoiceRepository choiceRepository;
 
     // 클라이언트 문항, 선택지 조회
+    @Transactional
     public QuestionResponseDto getQuestionById(Long id) {
         Question question = questionRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("해당 문항이 없습니다: " + id));

@@ -23,5 +23,6 @@ public class ScoreState extends BaseEntity {
 
     private String dimension;
 
+    @Setter
     private int score;
 }

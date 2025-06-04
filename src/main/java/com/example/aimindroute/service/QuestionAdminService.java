@@ -20,12 +20,12 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class QuestionAdminService {
     private final TestRepository testRepository;
     private final QuestionRepository questionRepository;
 
     // 어드민 문항, 선택지 삽입
+    @Transactional
     public ApiResponse<Long> createQuestion(BulkQuestionCreateRequestDto dto) {
 
         // 테스트 존재 검증
